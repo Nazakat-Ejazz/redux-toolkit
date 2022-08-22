@@ -1,10 +1,14 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { selectAllUsers } from "../users/userSlice";
 import { addNewPost } from "./postsSlice";
 
 const AddPostForm = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [userId, setUserId] = useState("");
+
+  const users = useSelector(selectAllUsers);
   const dispatch = useDispatch();
 
   const onTitleChange = (e) => {
@@ -15,14 +19,26 @@ const AddPostForm = () => {
     setContent(e.target.value);
   };
 
+  const onAuthorChange = (e) => {
+    setUserId(e.target.value);
+  };
+
   const onSaveClicked = () => {
     if (title && content) {
-      dispatch(addNewPost(title, content));
+      dispatch(addNewPost(title, content, userId));
 
       setTitle("");
       setContent("");
     }
   };
+
+  const canSave = Boolean(title) && Boolean(content) && Boolean(userId);
+
+  const AuthorsMenuItem = users.map((user) => (
+    <option key={user.id} value={user.id}>
+      {user.name}
+    </option>
+  ));
 
   return (
     <section>
@@ -36,7 +52,12 @@ const AddPostForm = () => {
           value={title}
           onChange={onTitleChange}
         />
-        <label htmlFor="postTitle">Post Title : </label>
+        <label htmlFor="postAuthor">Author : </label>
+        <select id="postAuthor" value={userId} onChange={onAuthorChange}>
+          <option value=""></option>
+          {AuthorsMenuItem}
+        </select>
+        <label htmlFor="postContent">Post Content : </label>
         <textarea
           name="postContent"
           id="postContent"
@@ -46,7 +67,7 @@ const AddPostForm = () => {
           onChange={onContentChange}
         />
 
-        <button type="button" onClick={onSaveClicked}>
+        <button type="button" onClick={onSaveClicked} disabled={!canSave}>
           Save Post
         </button>
       </form>
