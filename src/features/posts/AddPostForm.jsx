@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllUsers } from "../users/userSlice";
-import { addNewPost } from "./postsSlice";
+import { submitNewPost } from "./postsSlice";
 
 const AddPostForm = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [userId, setUserId] = useState("");
+  const [addReqStatus, setAddReqStatus] = useState("idle");
 
   const users = useSelector(selectAllUsers);
   const dispatch = useDispatch();
+
+  const canSave =
+    [title, content, userId].every(Boolean) && addReqStatus === "idle";
 
   const onTitleChange = (e) => {
     setTitle(e.target.value);
@@ -24,15 +28,26 @@ const AddPostForm = () => {
   };
 
   const onSaveClicked = () => {
-    if (title && content) {
-      dispatch(addNewPost(title, content, userId));
-
-      setTitle("");
-      setContent("");
+    if (canSave) {
+      try {
+        setAddReqStatus("pending");
+        dispatch(
+          submitNewPost({
+            title,
+            body: content,
+            userId,
+          })
+        ).unwrap();
+        setTitle("");
+        setContent("");
+        setUserId("");
+      } catch (err) {
+        console.log("Error: adding a new post failed !");
+      } finally {
+        setAddReqStatus("idle");
+      }
     }
   };
-
-  const canSave = Boolean(title) && Boolean(content) && Boolean(userId);
 
   const AuthorsMenuItem = users.map((user) => (
     <option key={user.id} value={user.id}>
@@ -41,7 +56,7 @@ const AddPostForm = () => {
   ));
 
   return (
-    <section>
+    <section className="post-form">
       <h3>Add New Post</h3>
       <form action="">
         <label htmlFor="postTitle">Post Title : </label>

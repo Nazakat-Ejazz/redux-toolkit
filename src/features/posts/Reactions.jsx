@@ -10,13 +10,7 @@ const reactionEmoji = {
   coffee: "☕",
 };
 
-// const reactionEmoji = {
-//   thumbsUp: "👍",
-//   wow: "😀",
-//   heart: "❤️",
-//   rocket: "🚀",
-//   coffee: "☕",
-// };
+
 
 const Reactions = ({ post }) => {
   const dispatch = useDispatch();
