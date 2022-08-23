@@ -1,10 +1,7 @@
-# Getting Started with Create React App
+# Getting started with Redux Toolkit 
+Redux Toolkit is the standard way to implement global state management in react js applications as claimed by the official website of react redux. Redux tookit provides a standardized templates to be able to easil write state logic of our application without indulging ourself into cumbersome boilerplate code.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
-
-In the project directory, you can run:
 
 ### `npm start`
 
